@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.library.mapper.BookMapper">
+    <resultMap id="book" type="com.library.library.entity.Book"/>
+    <select id="listBookPop" resultMap="book">
+        SELECT book.*, COUNT(*) as nu from borrow INNER JOIN book WHERE book.bookid = borrow.bookid  GROUP BY bookid  order by nu desc LIMIT 4
+    </select>
+
+    <select id="listRecommendBook" resultType="com.library.library.entity.Book">
+        SELECT * FROM book ORDER BY RAND() LIMIT 4
+    </select>
+</mapper>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.library.library.mapper.BorrowMapper">
+    <select id="listBorBook" resultType="com.library.library.entity.Book">
+        select bk.* ,bo.retdate, from borrow bo
+        left join book bk on bo.bookid = bk.bookid
+        where
+        bo.userid = #{id}
+        and
+        <if test="@ognl.E@notEmpty(isbor)">
+            bo.isbor = #{isbor}
+        </if>
+    </select>
+</mapper>
