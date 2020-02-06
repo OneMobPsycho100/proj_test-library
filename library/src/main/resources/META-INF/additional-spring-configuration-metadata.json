@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "jwt.config.key",
+      "type": "java.lang.String",
+      "description": "Description for jwt.config.key."
+    },
+    {
+      "name": "jwt.config.ttl",
+      "type": "java.lang.String",
+      "description": "Description for jwt.config.ttl."
+    },
+    {
+      "name": "spring.resources.image-loactions",
+      "type": "java.lang.String",
+      "description": "Description for spring.resources.image-loactions."
+    }
+  ] }

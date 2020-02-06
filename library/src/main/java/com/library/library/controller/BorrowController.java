@@ -1,12 +1,11 @@
 package com.library.library.controller;
 
 import com.library.library.entity.Book;
-import com.library.library.entity.Result;
+import com.library.library.domain.Result;
 import com.library.library.entity.User;
 import com.library.library.service.BorrowService;
 import com.library.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;

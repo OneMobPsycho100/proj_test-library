@@ -29,6 +29,30 @@ spring:
   resources:
     static-locations: E:\\images\\
 
+###security 不需要拦截的路径###
+secure:
+  urls:
+    exclude:
+      - /swagger-ui.html
+      - /swagger-resources/**
+      - /swagger/**
+      - /**/v2/api-docs
+      - /**/*.js
+      - /**/*.css
+      - /**/*.png
+      - /**/*.ico
+      - /webjars/springfox-swagger-ui/**
+      - /druid/**
+      - /actuator/**
+      - /user/login
+      - /user/register
+
+### JWT ###
+jwt:
+  config:
+    key: secret
+    ttl: 36000000
+
 ### mybatis-plus ###
 mybatis-plus:
   mapper-locations: classpath*:mapper/xml/*.xml
@@ -36,3 +60,12 @@ mybatis-plus:
 logging:
   level:
     com.library: debug
+
+# 放开Actuator Web REST 端点
+management:
+  endpoints:
+    web:
+      base-path: /actuator  # 访问根路径
+      exposure:
+        include: "*"
+    enabled-by-default: true

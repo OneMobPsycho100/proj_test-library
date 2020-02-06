@@ -1,6 +1,6 @@
 package com.library.library.config;
 
-import com.library.library.entity.Result;
+import com.library.library.domain.Result;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,7 @@ import java.util.Map;
 
 /**
  * 
+ * @author chenmingzhe
  * @Description:API接口异常拦截
  * 
  */

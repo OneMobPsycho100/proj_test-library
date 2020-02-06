@@ -1,13 +1,10 @@
 package com.library.library.controller;
 
 import com.library.library.entity.Book;
-import com.library.library.entity.Result;
+import com.library.library.domain.Result;
 import com.library.library.service.BookService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.FileSystemUtils;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
@@ -82,6 +79,7 @@ public class BookController   {
      * 查询图书列表
      * @return
      */
+    @ApiOperation(value = "查询图书列表")
     @GetMapping("/list")
     public Result<List<Book>> bookList() {
         return Result.getSuccess(bookService.list());
@@ -174,26 +172,28 @@ public class BookController   {
      * @throws IOException
      */
     @RequestMapping("/bookSave")
-    public Result<String> bookSave(Book book,@RequestParam MultipartFile img) throws IOException {
-        String name = img.getOriginalFilename();
-        assert name != null;
-        String suffix = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
-        String fileName = UUID.randomUUID() + "." + suffix;
-        //指定本地文件夹存储图片
-        File dir = new File("E://images//");
-        //如果文件夹不存在
-        if (!dir.exists()) {
-            //创建文件夹
-            dir.mkdir();
+    public Result<String> bookSave(Book book,@RequestParam(required = false) MultipartFile img) throws IOException {
+        if (img != null) {
+            String name = img.getOriginalFilename();
+            assert name != null;
+            String suffix = name.substring(name.lastIndexOf(".") + 1).toLowerCase();
+            String fileName = UUID.randomUUID() + "." + suffix;
+            //指定本地文件夹存储图片
+            File dir = new File("E://images//");
+            //如果文件夹不存在
+            if (!dir.exists()) {
+                //创建文件夹
+                dir.mkdir();
+            }
+            String filePath = dir.getPath() + "/";
+            File image = new File("E://images//" + fileName);
+            img.transferTo(image);
+            // 获取服务器地址
+            String path = request.getContextPath();
+            String basePath = request.getScheme() + "://" + request.getServerName()
+                    + ":" + request.getServerPort() + path;
+            book.setImage(basePath + "/static/image/" + fileName);
         }
-        String filePath = dir.getPath() + "/";
-        File image = new File("E://images//" + fileName);
-        img.transferTo(image);
-        // 获取服务器地址
-        String path = request.getContextPath();
-        String basePath = request.getScheme() + "://" + request.getServerName()
-                + ":" + request.getServerPort() + path;
-        book.setImage(basePath + "/static/image/" + fileName);
         bookService.saveOrUpdate(book);
         return Result.getSuccess();
     }

@@ -1,8 +1,17 @@
 package com.library.library.service;
 
 import com.alibaba.druid.sql.visitor.functions.If;
+import com.library.library.constant.LibraryConstants;
+import com.library.library.domain.UserCtmDetails;
 import com.library.library.entity.User;
 import com.library.library.mapper.UserMapper;
+import com.library.library.utils.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -20,6 +29,12 @@ import java.time.format.DateTimeFormatter;
 @Service
 public class UserService extends ServiceImpl<UserMapper, User> {
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
     /**
      * 用户注册
      * @param user
@@ -28,6 +43,7 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         // 普通用户
         user.setUsertype("1");
         String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedate(date);
         user.setUpdatedate(date);
         this.save(user);
@@ -38,18 +54,31 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      * @param user
      * @return
      */
-    public User login(User user) {
+    public String login(User user) {
         if (user == null) {
           throw new RuntimeException("账号或密码错误！");
         }
-        User userLogin = this.lambdaQuery().eq(User::getUsername, user.getUsername())
-                .eq(User::getPassword, user.getPassword())
-                .eq(User::getUsertype, user.getUsertype())
+        UserDetails userDetails = this.loadUserByUsernameAndType(user.getUsername(), user.getUsertype());
+        if(passwordEncoder.matches(user.getPassword(), userDetails.getPassword())) {
+            String token = jwtUtil
+                    .createJWT(userDetails.getUsername(), userDetails.getUsername(), LibraryConstants.ROLE_ADMIN);
+            UsernamePasswordAuthenticationToken authenticationToken =
+                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            return token;
+        }else {
+            throw new RuntimeException("账号或密码错误！");
+        }
+    }
+
+    public UserDetails loadUserByUsernameAndType(String userName, String userType) {
+        User userLogin = this.lambdaQuery().eq(User::getUsername, userName)
+                .eq(User::getUsertype, userType)
                 .one();
         if (userLogin == null) {
             throw new RuntimeException("账号或密码错误！");
         }
-        return userLogin;
+        return new UserCtmDetails(userLogin);
     }
 
     /**

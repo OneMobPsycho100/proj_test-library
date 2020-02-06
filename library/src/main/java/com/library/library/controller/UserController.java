@@ -1,16 +1,17 @@
 package com.library.library.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.library.library.entity.Result;
+import com.library.library.annotation.Role;
+import com.library.library.constant.LibraryConstants;
+import com.library.library.domain.Result;
 import com.library.library.entity.User;
 import com.library.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * <p>
@@ -47,22 +48,22 @@ public class UserController   {
      * @return
      */
     @RequestMapping("/login")
-    public Result<User> userLogin(@RequestBody User user) {
-        User login = userService.login(user);
+    public Result<String> userLogin(@RequestBody User user) {
         // 登录成功 将用户保存到session
-        request.getSession().setAttribute("user", login);
-        return Result.getSuccess(login);
+      //  request.getSession().setAttribute("user", login);
+        return Result.getSuccess(userService.login(user));
     }
 
     /**
      *退出登陆
      * @return
      */
-    @RequestMapping("/logout")
-    public Result<String> userLogout() {
-        request.getSession().removeAttribute("user");
-        return Result.getSuccess("已退出登陆！");
-    }
+//    @RequestMapping("/logout")
+//    public Result<String> userLogout() {
+//        SecurityContextHolder.getContext().setAuthentication(null);
+//        request.getSession().removeAttribute("user");
+//        return Result.getSuccess("已退出登陆！");
+//    }
 
     /**
      * 用户修改信息
@@ -140,6 +141,7 @@ public class UserController   {
      * @param pageSize
      * @return
      */
+    @Role(LibraryConstants.ROLE_ADMIN)
     @RequestMapping("/listUser")
     public Result<Page<User>> listAllUser(@RequestParam("curPage") int curPage,
                                           @RequestParam("pageSize") int pageSize) {
