@@ -1,14 +1,14 @@
 package com.library.library.config;
 
-import com.library.library.component.RestAuthenticationEntryPoint;
-import com.library.library.component.RestLogoutSuccessHandler;
-import com.library.library.component.RestfulAccessDeniedHandler;
+import com.library.library.component.*;
 import com.library.library.properties.ExcludeUrlsProperties;
 import com.library.library.utils.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Role;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 
 /**
  * @Author: chenmingzhe
@@ -41,9 +42,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                // .antMatchers("/**").permitAll()
                 .anyRequest()
                 .authenticated()
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O o) {
+                        o.setAccessDecisionManager(rolePathAccessDecisionManager());
+                        o.setSecurityMetadataSource(userFilterInvocationSecurityMetadataSource());
+                        return o;
+                    }
+                })
                 .and()
                 .csrf()
                 .disable()
+                .formLogin()
+                .loginPage("/user/login")
+                .and()
                 .logout()
                 .logoutUrl("/user/logout")
                 // 成功退出登录
@@ -77,6 +89,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public RestLogoutSuccessHandler restLogoutSuccessHandler() {return  new RestLogoutSuccessHandler();}
+
+    @Bean
+    public UserFilterInvocationSecurityMetadataSource userFilterInvocationSecurityMetadataSource() {return new UserFilterInvocationSecurityMetadataSource();}
+
+    @Bean
+    public RolePathAccessDecisionManager rolePathAccessDecisionManager() {return new RolePathAccessDecisionManager();}
 
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder();}

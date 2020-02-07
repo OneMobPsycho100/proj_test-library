@@ -1,22 +1,24 @@
 package com.library.library.service;
 
-import com.alibaba.druid.sql.visitor.functions.If;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.library.library.constant.LibraryConstants;
 import com.library.library.domain.UserCtmDetails;
 import com.library.library.entity.User;
+import com.library.library.entity.Userrole;
 import com.library.library.mapper.UserMapper;
 import com.library.library.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,9 +33,10 @@ public class UserService extends ServiceImpl<UserMapper, User> {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
     @Autowired
     private JwtUtil jwtUtil;
+    @Autowired
+    private UserroleService userroleService;
 
     /**
      * 用户注册
@@ -78,7 +81,11 @@ public class UserService extends ServiceImpl<UserMapper, User> {
         if (userLogin == null) {
             throw new RuntimeException("账号或密码错误！");
         }
-        return new UserCtmDetails(userLogin);
+        List<Userrole> userRoleList = userroleService.listUserRoleByUserId(userLogin.getId());
+        List<SimpleGrantedAuthority> roleNames = userRoleList.stream()
+                .map(ur -> new SimpleGrantedAuthority(ur.getName()))
+                .collect(Collectors.toList());
+        return new UserCtmDetails(userLogin,roleNames);
     }
 
     /**

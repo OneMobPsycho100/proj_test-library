@@ -1,5 +1,6 @@
 package com.library.library.domain;
 
+import com.library.library.entity.Role;
 import com.library.library.entity.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -16,8 +17,11 @@ public class UserCtmDetails implements UserDetails {
 
     private User user;
 
-    public UserCtmDetails(User user) {
+    private Collection<? extends GrantedAuthority> roleNames;
+
+    public UserCtmDetails(User user, Collection<? extends GrantedAuthority> roleNames) {
         this.user = user;
+        this.roleNames = roleNames;
     }
 
     public User getUser() {
@@ -26,7 +30,7 @@ public class UserCtmDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority("user"));
+        return roleNames;
     }
 
     @Override
@@ -57,5 +61,9 @@ public class UserCtmDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return false;
+    }
+
+    public Collection<? extends GrantedAuthority> getRoleNames() {
+        return roleNames;
     }
 }
