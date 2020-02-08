@@ -10,4 +10,6 @@ public interface LibraryConstants {
     public static final String TOKEN_HEAD = "Bearer";
 
     public static final String ROLE_ADMIN = "admin";
+
+    public static final String ROLE_LOGIN = "ROLE_LOGIN";
 }

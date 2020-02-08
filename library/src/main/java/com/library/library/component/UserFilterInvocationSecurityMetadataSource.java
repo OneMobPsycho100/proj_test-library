@@ -1,5 +1,7 @@
 package com.library.library.component;
 
+import com.library.library.constant.LibraryConstants;
+import com.library.library.entity.Menu;
 import com.library.library.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
@@ -8,7 +10,9 @@ import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.util.PathMatcher;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,16 +26,24 @@ public class UserFilterInvocationSecurityMetadataSource implements FilterInvocat
 
     @Autowired
     private MenuService menuService;
-
+    AntPathMatcher antPathMatcher = new AntPathMatcher();
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
-        AntPathMatcher antPathMatcher = new AntPathMatcher();
-        return menuService.listAllMenu()
-                .stream()
-                .filter(m -> !antPathMatcher.match(m.getPath(), requestUrl))
-                .map(m -> new SecurityConfig(m.getName().trim()))
-                .collect(Collectors.toList());
+        String url = "";
+        if (requestUrl.contains("?")) {
+             url = requestUrl.substring(0, requestUrl.indexOf("?"));
+        } else {url = requestUrl;}
+        List<Menu> menus = menuService.listAllMenu();
+        List<ConfigAttribute> collect = new ArrayList<>();
+        for (Menu m : menus) {
+            if (antPathMatcher.match(url, m.getPath().trim())) {
+                SecurityConfig securityConfig = new SecurityConfig(m.getName().trim());
+                collect.add(securityConfig);
+            }
+        }
+        return collect.size()>0 ? collect : SecurityConfig
+                .createList(LibraryConstants.ROLE_LOGIN);
     }
 
     @Override

@@ -11,12 +11,15 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+
+import java.util.List;
 
 /**
  * @Author: chenmingzhe
@@ -40,8 +43,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         registry.and()
                 .authorizeRequests()
                // .antMatchers("/**").permitAll()
-                .anyRequest()
-                .authenticated()
+               // .anyRequest()
+               // .authenticated()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
@@ -54,10 +57,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf()
                 .disable()
                 .formLogin()
-                .loginPage("/user/login")
+                .loginProcessingUrl("/user/login")
+                .permitAll()
                 .and()
                 .logout()
                 .logoutUrl("/user/logout")
+                .permitAll()
                 // 成功退出登录
                 .logoutSuccessHandler(restLogoutSuccessHandler())
                 .and()
@@ -69,6 +74,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(restAuthenticationEntryPoint());
 
     }
+
+//    @Override
+//    public void configure(WebSecurity web) throws Exception {
+//        List<String> exclude = excludeUrls().getExclude();
+//        web.ignoring().antMatchers(exclude.toArray(new String[0]));
+//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
