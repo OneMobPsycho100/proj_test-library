@@ -5,6 +5,7 @@ import com.library.library.annotation.Role;
 import com.library.library.constant.LibraryConstants;
 import com.library.library.domain.Result;
 import com.library.library.entity.User;
+import com.library.library.login.LoginService;
 import com.library.library.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -26,6 +27,8 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/user")
 public class UserController   {
 
+    @Autowired
+    private LoginService loginService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -49,9 +52,7 @@ public class UserController   {
      */
     @RequestMapping("/login")
     public Result<String> userLogin(@RequestBody User user) {
-        // 登录成功 将用户保存到session
-      //  request.getSession().setAttribute("user", login);
-        return Result.getSuccess(userService.login(user));
+        return Result.getSuccess(loginService.login(user));
     }
 
     /**

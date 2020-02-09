@@ -1,5 +1,6 @@
 package com.library.library.config;
 
+import com.library.library.domain.LibraryException;
 import com.library.library.domain.Result;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class ExceptionControllerAdvice {
 	 * @param req
 	 * @return
 	 */
-	@ExceptionHandler(value = { Exception.class, RuntimeException.class})
+	@ExceptionHandler(value = { Exception.class, RuntimeException.class, LibraryException.class})
 	@ResponseStatus(code = HttpStatus.OK)
 	public Result<?> errorHandler(Exception ex, ServletWebRequest req) {
 		Map<String, String[]> map = req.getParameterMap();

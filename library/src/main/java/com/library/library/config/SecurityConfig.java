@@ -2,10 +2,10 @@ package com.library.library.config;
 
 import com.library.library.component.*;
 import com.library.library.properties.ExcludeUrlsProperties;
+import com.library.library.service.UserCtmDetailService;
 import com.library.library.utils.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Role;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
@@ -83,9 +83,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService())
+        auth.userDetailsService(userCtmDetailService())
                 .passwordEncoder(passwordEncoder());
     }
+
 
     @Bean
     public ExcludeUrlsProperties excludeUrls(){
@@ -109,6 +110,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder();}
+
+    @Bean
+    public UserCtmDetailService userCtmDetailService(){return new UserCtmDetailService();}
 
     @Bean
     public JwtUtil jwtUtil() { return new JwtUtil();}
