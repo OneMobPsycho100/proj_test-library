@@ -38,7 +38,8 @@ public class PassWordValidator implements LoginValidator {
             LocalDate pwdLockTime = LocalDate
                     .parse(userLogin.getPwdlocktime(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (LocalDate.now().isAfter(pwdLockTime)) {
-                userService.lambdaUpdate().set(User::getPwdlocktime,null).update();
+                userService.lambdaUpdate().set(User::getPwdlocktime,null)
+                        .set(User::getPwderrtimes,0).update();
             }
         }
         if (LibraryConstants.PWD_ERROR_TIMES < userLogin.getPwderrtimes()) {
@@ -48,6 +49,9 @@ public class PassWordValidator implements LoginValidator {
         if (passwordEncoder.matches(user.getPassword(), userLogin.getPassword())) {
                 return LoginValidateResult.getSuccess();
         }else {
+            // 密码错误 次数加一
+            userService.lambdaUpdate()
+                    .set(User::getPwderrtimes,userLogin.getPwderrtimes()+1).update();
             return LoginValidateResult.getFailure("账号或密码错误！");
         }
     }
