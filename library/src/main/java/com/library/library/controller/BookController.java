@@ -1,10 +1,13 @@
 package com.library.library.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.library.library.entity.Book;
 import com.library.library.domain.Result;
 import com.library.library.service.BookService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import sun.misc.BASE64Decoder;
@@ -31,7 +34,8 @@ public class BookController   {
     private BookService bookService;
     @Autowired
     private HttpServletRequest request;
-
+    @Autowired
+    private RedisTemplate redisTemplate;
     /**
      * 添加图书
      * @param book
@@ -82,7 +86,12 @@ public class BookController   {
     @ApiOperation(value = "查询图书列表")
     @GetMapping("/list")
     public Result<List<Book>> bookList() {
-        return Result.getSuccess(bookService.list());
+        List<Book> bookList = (List<Book>) redisTemplate.opsForValue().get("bookList");
+        if (bookList == null) {
+            bookList = bookService.list();
+            redisTemplate.opsForValue().set("bookList", bookList);
+        }
+        return Result.getSuccess(bookList);
     }
 
     /**
