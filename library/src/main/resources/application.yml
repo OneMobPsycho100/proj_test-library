@@ -21,6 +21,7 @@ spring:
         test-on-return: false
         test-while-idle: true
         time-between-eviction-runs-millis: 60000
+
   ###文件上传大小配置###
   servlet:
     multipart:
@@ -28,6 +29,10 @@ spring:
       max-request-size: 10MB
   resources:
     static-locations: E:\\images\\
+  redis:
+    host: 39.97.240.230
+    port: 6379
+    password: 123456
 
 ###security 不需要拦截的路径###
 secure:

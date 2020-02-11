@@ -1,8 +1,6 @@
 package com.library.library;
 
-import com.library.library.login.LoginService;
-import com.library.library.login.custom.CustomLoginService;
-import com.library.library.login.validator.PassWordValidator;
+import com.library.library.login.CustomLoginAutoConfigurer;
 import com.library.library.properties.ExcludeUrlsProperties;
 import com.library.library.utils.JwtUtil;
 import org.mybatis.spring.annotation.MapperScan;
@@ -13,7 +11,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.annotation.Bean;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Import;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -24,6 +23,7 @@ import java.sql.SQLException;
 @SpringBootApplication
 @EnableConfigurationProperties({ExcludeUrlsProperties.class, JwtUtil.class})
 @MapperScan("com.library.library.mapper")
+@EnableCaching
 public class LibraryApplication implements CommandLineRunner {
 
 	@Autowired
@@ -44,13 +44,4 @@ public class LibraryApplication implements CommandLineRunner {
 		logger.info("获取连接 +{}",dataSource.getConnection().toString());
 	}
 
-	@Bean
-	public PassWordValidator passWordValidator(){
-		return new PassWordValidator();
-	}
-
-	@Bean
-	public LoginService customLoginService(){
-		return new CustomLoginService();
-	}
 }
