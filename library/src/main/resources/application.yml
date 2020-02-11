@@ -30,9 +30,9 @@ spring:
   resources:
     static-locations: E:\\images\\
   redis:
-    host: 39.97.240.230
+    host: 
     port: 6379
-    password: 123456
+    password:
 
 ###security 不需要拦截的路径###
 secure:
