@@ -32,13 +32,13 @@ public class RoleAspect {
     @Before("roleIntercept()")
     public void before(JoinPoint joinPoint){
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-        Role annotation = signature.getMethod().getAnnotation(Role.class);
-        if (LibraryConstants.ROLE_ADMIN.equals(annotation.value())) {
-            String authToken = request.getHeader(LibraryConstants.TOKEN_HEADER_NAME)
-                    .substring(LibraryConstants.TOKEN_HEAD.length());
-            String role = jwtUtil.getUserRoleFromToken(authToken);
-            if (!role.equals(annotation.value())) {
-                throw new RuntimeException("用户权限不足！");
+                Role annotation = signature.getMethod().getAnnotation(Role.class);
+                if (LibraryConstants.ROLE_ADMIN.equals(annotation.value())) {
+                    String authToken = request.getHeader(LibraryConstants.TOKEN_HEADER_NAME)
+                            .substring(LibraryConstants.TOKEN_HEAD.length());
+                    String role = jwtUtil.getUserRoleFromToken(authToken);
+                    if (!role.equals(annotation.value())) {
+                        throw new RuntimeException("用户权限不足！");
             }
         }
     }

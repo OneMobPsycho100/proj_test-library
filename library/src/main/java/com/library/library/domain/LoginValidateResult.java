@@ -19,7 +19,7 @@ public class LoginValidateResult {
         return new LoginValidateResult(true,null);
     }
 
-    public LoginValidateResult(boolean isOk, String msg) {
+    private LoginValidateResult(boolean isOk, String msg) {
         this.isOk = isOk;
         this.msg = msg;
     }

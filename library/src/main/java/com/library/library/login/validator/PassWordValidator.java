@@ -38,7 +38,7 @@ public class PassWordValidator implements LoginValidator {
             LocalDate pwdLockTime = LocalDate
                     .parse(userLogin.getPwdlocktime(), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             if (LocalDate.now().isAfter(pwdLockTime)) {
-                userService.lambdaUpdate().set(User::getPwdlocktime,null)
+                userService.lambdaUpdate().set(User::getPwdlocktime,"")
                         .set(User::getPwderrtimes,0).update();
             }
         }

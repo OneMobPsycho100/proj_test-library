@@ -72,6 +72,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(restfulAccessDeniedHandler())
                 // 登录失效
                 .authenticationEntryPoint(restAuthenticationEntryPoint());
+                // 同一账号只能在一处登录
+//                .and()
+//                .sessionManagement()
+//                .maximumSessions(1)
+//                .expiredUrl("/user/login");
 
     }
 
