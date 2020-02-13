@@ -44,8 +44,8 @@ public class UserService extends ServiceImpl<UserMapper, User> {
      */
     public void updateUser(User user) {
         // 更新修改时间
-        user.setUpdatedate(LocalDateTime.now()
-                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+//        user.setUpdatedate(LocalDateTime.now()
+//                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         this.saveOrUpdate(user);
     }
 

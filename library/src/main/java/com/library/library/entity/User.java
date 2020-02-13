@@ -85,6 +85,12 @@ public class User implements Serializable {
     @TableField("updatedate")
     private String updatedate;
 
+    /**
+     * 修改人
+     */
+    @TableField("upduser")
+    private String upduser;
+
 
     public Integer getId() {
         return id;
@@ -180,6 +186,14 @@ public class User implements Serializable {
 
     public void setPwderrtimes(int pwderrtimes) {
         this.pwderrtimes = pwderrtimes;
+    }
+
+    public String getUpduser() {
+        return upduser;
+    }
+
+    public void setUpduser(String upduser) {
+        this.upduser = upduser;
     }
 
     @Override

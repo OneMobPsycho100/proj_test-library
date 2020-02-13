@@ -74,10 +74,10 @@ public class UserController   {
     @PutMapping("/userUpdate")
     public Result<String> userUpdate(@RequestBody User user) {
         userService.updateUser(user);
-        HttpSession session = request.getSession();
-        // 修改之后更新session
-        session.removeAttribute("user");
-        session.setAttribute("user",userService.getById(user.getId()));
+//        HttpSession session = request.getSession();
+//        // 修改之后更新session
+//        session.removeAttribute("user");
+//        session.setAttribute("user",userService.getById(user.getId()));
         return Result.getSuccess("修改成功！");
     }
 
