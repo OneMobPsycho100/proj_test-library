@@ -118,9 +118,9 @@
 
 	<repositories>
 		<repository>
-			<id>spring-milestones</id>
-			<name>Spring Milestones</name>
-			<url>https://repo.spring.io/milestone</url>
+			<id>nexus-own</id>
+			<name>own-nexus-repository</name>
+			<url>http://39.97.240.230:9101/nexus/content/groups/public/</url>
 		</repository>
 	</repositories>
 </project>
